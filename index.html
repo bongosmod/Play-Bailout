@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAILOUT — Make the call.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root {
+  --bg: #0f0c12;
+  --panel: #1c1720;
+  --paper: #f0e6d0;
+  --muted: #a89880;
+  --red: #d42a35;
+  --gold: #f0c45a;
+  --line: #5a4550;
+  --case-from: #c8b48a;
+  --case-to: #7a6a50;
+  --case-border: #e0cfa0;
+  --player-from: #e8c870;
+  --player-to: #a07030;
+  --accent: #8a2830;
+  --accent-border: #e09080;
+  --phone-body: #c02830;
+  --phone-dark: #8a1420;
+  --topbar: #18121a;
+  --topbar-border: #6a3a42;
+}
+
+/* THEME: GOLD RUSH */
+body.theme-gold {
+  --bg: #120e08;
+  --panel: #1e1810;
+  --paper: #f5e8c0;
+  --gold: #ffd060;
+  --line: #6a5030;
+  --case-from: #e0c070;
+  --case-to: #8a6820;
+  --case-border: #f0d080;
+  --player-from: #ffe090;
+  --player-to: #c09030;
+  --accent: #8a6020;
+  --accent-border: #e0b050;
+  --phone-body: #c09020;
+  --phone-dark: #8a6818;
+  --topbar: #1a1408;
+  --topbar-border: #8a6020;
+}
+
+/* THEME: NEON TOKYO */
+body.theme-neon {
+  --bg: #0a0814;
+  --panel: #16122a;
+  --paper: #e8e0ff;
+  --gold: #ff60d0;
+  --line: #4a3060;
+  --case-from: #a080e0;
+  --case-to: #5030a0;
+  --case-border: #c0a0ff;
+  --player-from: #ff80e0;
+  --player-to: #a03080;
+  --accent: #6030a0;
+  --accent-border: #c080ff;
+  --phone-body: #d040a0;
+  --phone-dark: #802060;
+  --topbar: #100c1c;
+  --topbar-border: #8030a0;
+}
+
+/* THEME: FOREST */
+body.theme-forest {
+  --bg: #0a120c;
+  --panel: #142018;
+  --paper: #e0f0d8;
+  --gold: #80d060;
+  --line: #3a5a40;
+  --case-from: #90b870;
+  --case-to: #406030;
+  --case-border: #b0d090;
+  --player-from: #b0e080;
+  --player-to: #508030;
+  --accent: #306030;
+  --accent-border: #80c060;
+  --phone-body: #40a050;
+  --phone-dark: #287038;
+  --topbar: #0c1810;
+  --topbar-border: #306030;
+}
+
+/* THEME: ICE */
+body.theme-ice {
+  --bg: #0a1018;
+  --panel: #121c28;
+  --paper: #e0f0ff;
+  --gold: #80d0ff;
+  --line: #305060;
+  --case-from: #a0c8e0;
+  --case-to: #406080;
+  --case-border: #c0e0f0;
+  --player-from: #c0e8ff;
+  --player-to: #5090c0;
+  --accent: #206080;
+  --accent-border: #60b0e0;
+  --phone-body: #40a0d0;
+  --phone-dark: #2870a0;
+  --topbar: #0c141c;
+  --topbar-border: #306080;
+}
+
+/* THEME: VOID */
+body.theme-void {
+  --bg: #08060c;
+  --panel: #120e18;
+  --paper: #e0d8f0;
+  --gold: #c080ff;
+  --line: #3a2848;
+  --case-from: #7050a0;
+  --case-to: #302050;
+  --case-border: #a080d0;
+  --player-from: #b080e0;
+  --player-to: #503080;
+  --accent: #402060;
+  --accent-border: #a060e0;
+  --phone-body: #7030b0;
+  --phone-dark: #482070;
+  --topbar: #0a0810;
+  --topbar-border: #502080;
+}
+
+/* THEME: BLOOD */
+body.theme-blood {
+  --bg: #120808;
+  --panel: #1c1010;
+  --paper: #f0d8d0;
+  --gold: #ff6060;
+  --line: #5a3030;
+  --case-from: #c07070;
+  --case-to: #602020;
+  --case-border: #e09090;
+  --player-from: #e08080;
+  --player-to: #802020;
+  --accent: #802020;
+  --accent-border: #e07070;
+  --phone-body: #c03030;
+  --phone-dark: #801818;
+  --topbar: #160c0c;
+  --topbar-border: #802020;
+}
+
+* { box-sizing: border-box; image-rendering: pixelated; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--paper);
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(#ffffff08 1px, transparent 1px),
+    linear-gradient(0deg, transparent 48%, #00000015 50%, transparent 52%);
+  background-size: 6px 6px, 100% 6px;
+  transition: background-color .4s;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  color: var(--paper);
+  background: #2e2830;
+  border: 4px solid #c4b090;
+  padding: 10px 16px;
+  box-shadow: 5px 5px 0 #050307;
+  transition: filter .1s, transform .08s;
+  image-rendering: pixelated;
+}
+button:hover { filter: brightness(1.3); }
+button:active { transform: translate(3px, 3px); box-shadow: 2px 2px #050307; }
+button:disabled { opacity: .35; cursor: default; filter: none; }
+
+.topbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: var(--topbar);
+  border-bottom: 5px solid var(--topbar-border);
+  box-shadow: 0 5px #050307;
+  position: relative;
+  z-index: 5;
+  transition: background .4s, border-color .4s;
+}
+.logo {
+  font: 16px 'Press Start 2P';
+  color: var(--gold);
+  text-shadow: 3px 3px #7a2028;
+}
+.logo span { color: var(--red); }
+.wallet {
+  color: var(--gold);
+  font-size: 24px;
+  text-shadow: 2px 2px #000;
+}
+
+.wrap {
+  max-width: 1280px;
+  margin: auto;
+  padding: 18px 14px 110px;
+}
+
+.intro { text-align: center; margin: 6px auto 18px; }
+.eyebrow {
+  font: 8px 'Press Start 2P';
+  letter-spacing: 2px;
+  color: #c06058;
+}
+.intro h1 {
+  font: clamp(20px, 3.8vw, 34px) 'Press Start 2P';
+  line-height: 1.55;
+  margin: 10px 0;
+  color: #f5e8c8;
+  text-shadow: 4px 4px #4a2028;
+}
+.intro p { color: #b0a090; margin: 0; }
+
+.screen { display: none; }
+.screen.active { display: block; }
+.center { text-align: center; }
+
+.panel {
+  background: var(--panel);
+  border: 4px solid var(--line);
+  box-shadow: 8px 8px #050307;
+  padding: 16px;
+  transition: background .4s, border-color .4s;
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #c8b8a0;
+  border-bottom: 3px dashed var(--line);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  font-size: 20px;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 16px;
+  align-items: start;
+}
+
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.case {
+  position: relative;
+  aspect-ratio: 1.15;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #2a2220;
+  border: 4px solid var(--case-border);
+  background: linear-gradient(145deg, var(--case-from), var(--case-to));
+  box-shadow: inset 0 0 0 3px #4a3e34, 5px 5px #050307;
+  font: 11px 'Press Start 2P';
+  text-shadow: 1px 1px #fff6;
+  overflow: hidden;
+  transition: transform .12s, background .4s, border-color .4s;
+}
+.case:before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed #4a3e34;
+  pointer-events: none;
+}
+.case:hover:not(:disabled) { transform: scale(1.04); }
+.case-number {
+  font-size: clamp(12px, 1.5vw, 16px);
+  z-index: 1;
+}
+.case-handle {
+  width: 26px;
+  height: 7px;
+  border: 3px solid #3a2e26;
+  background: #b09060;
+  z-index: 1;
+}
+.case.selected {
+  outline: 4px solid var(--gold);
+  outline-offset: 3px;
+}
+.case.player {
+  background: linear-gradient(145deg, var(--player-from), var(--player-to));
+  border-color: var(--case-border);
+}
+.case.opened {
+  background: #252028;
+  color: #f5d880;
+  border-color: #7a6550;
+  box-shadow: inset 0 0 0 3px #120e14, 4px 4px #050307;
+  animation: caseReveal .5s cubic-bezier(.2, .85, .25, 1);
+}
+.case.opened:before { border-color: #6a5545; }
+.case.opened .case-handle { display: none; }
+.case-value {
+  font: clamp(9px, 1.15vw, 13px) 'Press Start 2P';
+  color: #ffe090;
+  text-shadow: 2px 2px #4a2818;
+  z-index: 1;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-align: center;
+  padding: 2px;
+}
+.case.opened:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 20%, #fff6 48%, transparent 75%);
+  transform: translateX(-130%);
+  animation: shine .6s .1s forwards;
+}
+.case.high-value {
+  animation: highReveal .65s cubic-bezier(.2, .85, .25, 1), pulseGlow 1.2s .6s ease-out;
+}
+.case.low-value {
+  animation: caseReveal .45s cubic-bezier(.2, .85, .25, 1);
+}
+
+@keyframes caseReveal {
+  0% { transform: rotateY(95deg) scale(.55); filter: brightness(2.5); }
+  55% { transform: rotateY(-15deg) scale(1.1); }
+  100% { transform: none; filter: none; }
+}
+@keyframes highReveal {
+  0% { transform: rotateY(95deg) scale(.4); filter: brightness(3) saturate(1.5); }
+  40% { transform: rotateY(-20deg) scale(1.2); }
+  70% { transform: scale(1.08); }
+  100% { transform: none; filter: none; }
+}
+@keyframes shine {
+  to { transform: translateX(130%); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: inset 0 0 0 3px #120e14, 4px 4px #050307, 0 0 0 transparent; }
+  50% { box-shadow: inset 0 0 0 3px #120e14, 4px 4px #050307, 0 0 18px #f0c45a88; }
+}
+
+.instructions {
+  text-align: center;
+  color: #c0b090;
+  min-height: 42px;
+  padding: 12px 4px 0;
+  font-size: 21px;
+}
+
+.board-title {
+  font: 9px 'Press Start 2P';
+  text-align: center;
+  color: #e8d4a8;
+  line-height: 1.7;
+  margin: 0 0 12px;
+}
+.value-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.value-side h3 {
+  font: 8px 'Press Start 2P';
+  text-align: center;
+  margin: 0 0 8px;
+  color: #d0bc98;
+}
+.value-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.prize {
+  font-size: 16px;
+  padding: 4px 6px;
+  background: #2a2430;
+  border-left: 5px solid #8a6848;
+  display: flex;
+  justify-content: center;
+  color: #e8d8b8;
+  white-space: nowrap;
+  transition: opacity .3s, background .3s;
+}
+.value-side.high .prize { border-color: #c09040; }
+.prize.gone {
+  opacity: .18;
+  text-decoration: line-through;
+  background: #141018;
+}
+
+.start-card {
+  max-width: 680px;
+  margin: 16px auto;
+  background: var(--panel);
+  border: 4px solid var(--line);
+  padding: 26px;
+  box-shadow: 9px 9px #050307;
+}
+.start-card p { color: #c0b090; line-height: 1.4; }
+.big {
+  font: clamp(20px, 4.5vw, 32px) 'Press Start 2P';
+  line-height: 1.55;
+  color: #f0d8a0;
+}
+.primary {
+  background: var(--accent);
+  border-color: var(--accent-border);
+  font: 10px 'Press Start 2P';
+  padding: 14px 18px;
+  line-height: 1.6;
+}
+.deal-btn {
+  background: #3a6a40;
+  border-color: #a0d090;
+}
+.no-btn {
+  background: #8a2830;
+  border-color: #e09080;
+}
+
+/* PHONE */
+.phone-wrap {
+  position: fixed;
+  right: 14px;
+  bottom: 8px;
+  z-index: 12;
+  width: 150px;
+  height: 170px;
+  filter: drop-shadow(6px 7px 0 #030205);
+}
+.phone {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+.phone svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+.phone .phone-body-fill { fill: var(--phone-body); transition: fill .4s; }
+.phone .phone-dark-fill { fill: var(--phone-dark); transition: fill .4s; }
+.phone.ringing {
+  animation: phoneShake .11s infinite alternate;
+}
+.phone.picked {
+  animation: pickup .4s ease-out;
+}
+@keyframes phoneShake {
+  0% { transform: rotate(-11deg) translateX(-5px) translateY(2px); }
+  100% { transform: rotate(11deg) translateX(5px) translateY(-2px); }
+}
+@keyframes pickup {
+  0% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-34px) rotate(12deg) scale(1.1); }
+  100% { transform: none; }
+}
+.phone-label {
+  position: absolute;
+  right: 158px;
+  bottom: 58px;
+  white-space: nowrap;
+  background: #241c28;
+  border: 3px solid #a04038;
+  padding: 6px 10px;
+  color: #f0d0a0;
+  font-size: 17px;
+  pointer-events: none;
+  box-shadow: 3px 3px #050307;
+  max-width: 180px;
+  text-align: right;
+}
+
+.flash {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+}
+.flash.green {
+  background: #40ff60;
+  animation: greenFlash .65s;
+}
+.flash.red {
+  background: #ff2035;
+  animation: redFlash .65s;
+}
+@keyframes greenFlash {
+  0% { opacity: 0; }
+  15% { opacity: .55; }
+  100% { opacity: 0; }
+}
+@keyframes redFlash {
+  0% { opacity: 0; }
+  15% { opacity: .55; }
+  100% { opacity: 0; }
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #06040adc;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 30;
+}
+.modal-backdrop.show { display: flex; }
+.call-card {
+  width: min(640px, 100%);
+  background: #221c26;
+  border: 5px solid #b08050;
+  box-shadow: 10px 10px #030205;
+  padding: 22px;
+  position: relative;
+  animation: modalIn .35s ease-out;
+}
+.call-card:before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 2px dashed #705040;
+  pointer-events: none;
+}
+@keyframes modalIn {
+  from { transform: scale(.85) translateY(20px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.call-head {
+  font: 9px 'Press Start 2P';
+  color: #f0d080;
+  text-align: center;
+  line-height: 1.75;
+  margin: 0 0 14px;
+}
+.cartoon-bubble {
+  position: relative;
+  background: #f0e4c8;
+  color: #1a1418;
+  border: 5px solid #140e12;
+  padding: 18px 20px;
+  min-height: 120px;
+  box-shadow: 6px 6px #08060a;
+  font-size: 25px;
+  line-height: 1.3;
+}
+.cartoon-bubble:after {
+  content: "";
+  position: absolute;
+  bottom: -18px;
+  left: 50px;
+  width: 24px;
+  height: 24px;
+  background: #f0e4c8;
+  border-right: 5px solid #140e12;
+  border-bottom: 5px solid #140e12;
+  transform: skewY(32deg) rotate(28deg);
+}
+.typing-cursor {
+  display: inline-block;
+  width: 9px;
+  height: 22px;
+  background: #a02830;
+  vertical-align: middle;
+  animation: blink .65s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.call-offer {
+  font: clamp(22px, 4.2vw, 32px) 'Press Start 2P';
+  color: var(--gold);
+  text-align: center;
+  margin: 18px 0 8px;
+  text-shadow: 3px 3px #000;
+}
+.call-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.hidden { display: none !important; }
+
+/* SHOP TABS */
+.shop-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.shop-tab {
+  font: 9px 'Press Start 2P';
+  padding: 10px 16px;
+  background: #2a2430;
+  border: 3px solid #5a4550;
+  color: #c0b090;
+}
+.shop-tab.active {
+  background: var(--accent);
+  border-color: var(--accent-border);
+  color: #fff;
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+.shop-item {
+  background: #241e2a;
+  border: 4px solid #5a4550;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 5px 5px #050307;
+  position: relative;
+  overflow: hidden;
+  transition: transform .15s, border-color .2s;
+}
+.shop-item:hover { transform: translateY(-3px); }
+.shop-item.owned {
+  border-color: #6a9a58;
+  box-shadow: 5px 5px #050307, 0 0 14px #4a8a4088;
+}
+.shop-item.active-theme {
+  border-color: var(--gold);
+  box-shadow: 5px 5px #050307, 0 0 16px #f0c45a66;
+}
+.shop-art {
+  height: 100px;
+  margin-bottom: 12px;
+  display: grid;
+  place-items: center;
+  border: 4px solid #b09070;
+  background: #100e14;
+  position: relative;
+  overflow: hidden;
+}
+.shop-art .artifact {
+  font: 26px 'Press Start 2P';
+  color: #f0d080;
+  text-shadow: 3px 3px #7a2028;
+  z-index: 2;
+  position: relative;
+}
+.shop-art .sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.shop-item.owned .sparkles { opacity: 1; }
+.shop-item h3 {
+  font: 10px 'Press Start 2P';
+  line-height: 1.7;
+  color: #f5e4c0;
+  min-height: 36px;
+}
+.shop-item p {
+  color: #b0a090;
+  min-height: 44px;
+  font-size: 17px;
+  line-height: 1.2;
+}
+.shop-effect {
+  color: #80c070;
+  font-size: 16px;
+  margin: 6px 0;
+  min-height: 22px;
+}
+.shop-price {
+  color: var(--gold);
+  margin: 8px 0;
+  font-size: 21px;
+  text-shadow: 2px 2px #000;
+}
+.shop-item button {
+  font-size: 16px;
+  padding: 8px 12px;
+}
+.shop-item.owned button {
+  background: #3a5a38;
+  border-color: #80b070;
+}
+
+.particle-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+  overflow: hidden;
+}
+
+.result-amount {
+  font: clamp(24px, 5vw, 42px) 'Press Start 2P';
+  color: var(--gold);
+  margin: 20px 0;
+  overflow-wrap: anywhere;
+  text-shadow: 3px 3px #000;
+}
+
+.hint {
+  font-size: 18px;
+  color: #a08070;
+  margin-top: 12px;
+}
+
+@media (max-width: 820px) {
+  .game-layout { grid-template-columns: 1fr; }
+  .board-panel { order: 2; }
+  .case-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .phone-wrap { width: 110px; height: 125px; right: 6px; bottom: 4px; }
+  .phone-label { right: 118px; bottom: 40px; font-size: 15px; }
+  .wrap { padding: 12px 8px 100px; }
+}
+@media (max-width: 420px) {
+  .case-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .topbar { padding: 0 10px; }
+  .logo { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="logo">BAIL<span>OUT</span></div>
+  <div class="wallet">TOTAL: <span id="wallet">$0</span></div>
+</header>
+
+<main class="wrap">
+  <section id="home" class="screen active center">
+    <div class="intro">
+      <div class="eyebrow">ONE CASE. ONE CHANCE.</div>
+      <h1>MAKE THE CALL.</h1>
+      <p>How much are you willing to walk away with?</p>
+    </div>
+    <div class="start-card">
+      <div class="big">26 CASES.<br>26 VALUES.</div>
+      <p>Pick your case. Open the others. The Banker will call with an offer. Take the money… or risk it all.</p>
+      <p>Your winnings become your lifetime total. Spend them on upgrades and themes that change the game.</p>
+      <p class="hint">📞 Call the red phone anytime for help or secrets.</p>
+      <button class="primary" onclick="startGame()">START DEALING</button>
+    </div>
+  </section>
+
+  <section id="game" class="screen">
+    <div class="intro">
+      <div class="eyebrow">BAILOUT PRESENTS</div>
+      <h1>DEAL OR NO DEAL</h1>
+    </div>
+    <div class="game-layout">
+      <section class="panel">
+        <div class="status">
+          <span id="phase">CHOOSE YOUR CASE</span>
+          <span id="round">YOUR CASE</span>
+        </div>
+        <div id="cases" class="case-grid"></div>
+        <div id="instructions" class="instructions">Choose one case to keep. It stays closed.</div>
+      </section>
+      <aside class="panel board-panel">
+        <h2 class="board-title">THE BOARD<br>— VALUES —</h2>
+        <div class="value-columns">
+          <div class="value-side">
+            <h3>LOW</h3>
+            <div id="low-values" class="value-list"></div>
+          </div>
+          <div class="value-side high">
+            <h3>HIGH</h3>
+            <div id="high-values" class="value-list"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="shop" class="screen">
+    <div class="intro">
+      <div class="eyebrow">THE AFTER PARTY</div>
+      <h1>THE LOBBY SHOP</h1>
+    </div>
+    <div class="panel">
+      <div class="status">
+        <span>YOUR COLLECTION</span>
+        <span>AVAILABLE: <b id="shop-wallet">$0</b></span>
+      </div>
+      <div class="shop-tabs">
+        <button class="shop-tab active" id="tab-items" onclick="switchShopTab('items')">UPGRADES</button>
+        <button class="shop-tab" id="tab-themes" onclick="switchShopTab('themes')">THEMES</button>
+      </div>
+      <p class="hint" id="shop-hint" style="text-align:center;margin-bottom:8px">📞 Call the phone for the Banker’s take on these.</p>
+      <div id="shop-grid" class="shop-grid"></div>
+      <div class="center" style="margin-top:22px">
+        <button class="primary" onclick="startGame()">PLAY ANOTHER ROUND</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="result" class="screen center">
+    <div class="intro">
+      <div class="eyebrow">THAT'S A WRAP</div>
+      <h1>DEAL COMPLETE</h1>
+    </div>
+    <div class="start-card">
+      <p id="result-line">You walked away with…</p>
+      <div id="result-amount" class="result-amount">$0</div>
+      <p id="result-extra"></p>
+      <p id="result-bonus" style="color:#80c070"></p>
+      <p>LIFETIME TOTAL: <strong id="result-total" style="color:#e9bd69">$0</strong></p>
+      <button class="primary" onclick="showShop()">VISIT THE LOBBY SHOP</button>
+    </div>
+  </section>
+</main>
+
+<div class="phone-wrap">
+  <div class="phone-label" id="phone-label">STANDBY</div>
+  <button class="phone" id="phone" aria-label="Pick up the red rotary phone" onclick="pickupPhone()">
+    <svg viewBox="0 0 140 160" aria-hidden="true">
+      <path d="M108 36 L118 42 L114 50 L124 56 L118 64 L128 72 L122 82 L130 92 L124 102" fill="none" stroke="#3a0c12" stroke-width="5" stroke-linecap="square"/>
+      <rect x="18" y="8" width="28" height="22" class="phone-dark-fill" stroke="#4a1018" stroke-width="3"/>
+      <rect x="22" y="12" width="20" height="14" class="phone-body-fill"/>
+      <rect x="26" y="16" width="12" height="6" fill="#e05058"/>
+      <rect x="94" y="8" width="28" height="22" class="phone-dark-fill" stroke="#4a1018" stroke-width="3"/>
+      <rect x="98" y="12" width="20" height="14" class="phone-body-fill"/>
+      <rect x="102" y="16" width="12" height="6" fill="#e05058"/>
+      <rect x="42" y="12" width="56" height="12" class="phone-dark-fill" stroke="#4a1018" stroke-width="3"/>
+      <rect x="46" y="15" width="48" height="6" class="phone-body-fill"/>
+      <rect x="16" y="40" width="108" height="88" class="phone-dark-fill" stroke="#4a1018" stroke-width="4"/>
+      <rect x="22" y="46" width="96" height="76" class="phone-body-fill"/>
+      <rect x="26" y="52" width="10" height="4" fill="#701018"/>
+      <rect x="26" y="60" width="10" height="4" fill="#701018"/>
+      <rect x="104" y="52" width="10" height="4" fill="#701018"/>
+      <rect x="104" y="60" width="10" height="4" fill="#701018"/>
+      <circle cx="70" cy="82" r="32" fill="#e0c890" stroke="#3a2820" stroke-width="4"/>
+      <circle cx="70" cy="82" r="24" fill="#9a7850" stroke="#3a2820" stroke-width="3"/>
+      <circle cx="70" cy="82" r="8" fill="#d0b880" stroke="#3a2820" stroke-width="2"/>
+      <g fill="#1a1210">
+        <circle cx="70" cy="60" r="5"/>
+        <circle cx="86" cy="66" r="5"/>
+        <circle cx="92" cy="82" r="5"/>
+        <circle cx="86" cy="98" r="5"/>
+        <circle cx="70" cy="104" r="5"/>
+        <circle cx="54" cy="98" r="5"/>
+        <circle cx="48" cy="82" r="5"/>
+        <circle cx="54" cy="66" r="5"/>
+        <circle cx="78" cy="74" r="3.5"/>
+        <circle cx="62" cy="74" r="3.5"/>
+      </g>
+      <rect x="88" y="58" width="8" height="14" fill="#5a4030" stroke="#3a2820" stroke-width="2"/>
+      <rect x="28" y="126" width="84" height="22" class="phone-dark-fill" stroke="#4a1018" stroke-width="3"/>
+      <rect x="34" y="130" width="72" height="14" class="phone-body-fill"/>
+      <rect x="40" y="134" width="60" height="6" fill="#c02830"/>
+    </svg>
+  </button>
+</div>
+
+<div id="flash" class="flash"></div>
+<div id="particles" class="particle-layer"></div>
+
+<div id="banker-modal" class="modal-backdrop">
+  <div class="call-card">
+    <div class="call-head">INCOMING CALL<br>THE BANKER • PRIVATE LINE</div>
+    <div id="chat-log" class="cartoon-bubble">…</div>
+    <div id="offer-wrap" class="hidden">
+      <div class="call-offer" id="offer-amount">$0</div>
+      <div class="call-actions">
+        <button class="deal-btn" onclick="takeDeal()">DEAL</button>
+        <button class="no-btn" onclick="noDeal()">NO DEAL</button>
+      </div>
+    </div>
+    <div id="chat-continue" class="call-actions hidden">
+      <button id="chat-continue-btn" onclick="closeBanker()">BACK TO THE CASES</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MONEY = [.01,1,5,10,25,50,75,100,200,300,400,500,750,1000,5000,10000,25000,50000,75000,100000,200000,300000,400000,500000,750000,1000000];
+const fmt = n => '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: n < 1 ? 2 : 0, maximumFractionDigits: 2});
+const rounds = [6,5,4,3,2,1,1,1];
+
+// Rebalanced upgrades — weaker effects, higher late prices
+const goods = [
+  {id:'velvet', name:'THE VELVET ROPE', price:75000, desc:'Private entrance. The bouncer already knows your name.', symbol:'VIP', art:'linear-gradient(160deg,#6d1727 0%,#210c18 60%,#3a1020 100%)', effect:'Offers +7%', bonus:'offer', mult:1.07},
+  {id:'neon', name:'MIDNIGHT NEON', price:160000, desc:'Buzzing neon sign. High-value opens feel better.', symbol:'OPEN', art:'linear-gradient(160deg,#152d43 0%,#17121e 50%,#0a2035 100%)', effect:'+$3,000 on $100k+ opens', bonus:'neon', amount:3000},
+  {id:'crown', name:'THE GOLDEN CROWN', price:380000, desc:'A ridiculous crown. Pure royalty energy.', symbol:'♛', art:'linear-gradient(160deg,#9a742d 0%,#3a2816 55%,#6a4a18 100%)', effect:'+$8,000 end bonus', bonus:'flat', amount:8000},
+  {id:'trophy', name:'MILLIONAIRE TROPHY', price:720000, desc:'A giant trophy that says you have actual taste.', symbol:'#1', art:'linear-gradient(160deg,#b48b3d 0%,#493019 50%,#7a5a20 100%)', effect:'Final winnings +10%', bonus:'final', mult:1.10},
+  {id:'arcade', name:'ARCADE CABINET', price:1400000, desc:'8-bit cabinet in the lobby. High scores only.', symbol:'8BIT', art:'linear-gradient(160deg,#54366c 0%,#17121e 55%,#2a1840 100%)', effect:'Offers +5% + better floor', bonus:'offer', mult:1.05},
+  {id:'moon', name:'MOONLIGHT PENTHOUSE', price:3200000, desc:'Ridiculous penthouse view. You made it.', symbol:'LUX', art:'linear-gradient(160deg,#182d48 0%,#10111e 50%,#0a1a30 100%)', effect:'All money +8%', bonus:'all', mult:1.08},
+  {id:'diamond', name:'DIAMOND ROTARY PHONE', price:7500000, desc:'The Banker notices this one. Pure flex.', symbol:'☎', art:'linear-gradient(160deg,#76a9ae 0%,#263c50 50%,#3a6070 100%)', effect:'Offers +12%', bonus:'offer', mult:1.12},
+  {id:'yacht', name:'GOLDEN YACHT KEY', price:18000000, desc:'Keys to a yacht you will never use. Perfect.', symbol:'⚓', art:'linear-gradient(160deg,#2a4a5a 0%,#0e1a22 55%,#1a3040 100%)', effect:'All money +15%', bonus:'all', mult:1.15},
+  {id:'vault', name:'PRIVATE VAULT', price:42000000, desc:'Personal vault under the lobby. Truly excessive.', symbol:'◆', art:'linear-gradient(160deg,#3a2a18 0%,#120e0a 50%,#2a1e10 100%)', effect:'All money +22%', bonus:'all', mult:1.22}
+];
+
+// Theme packs
+const themes = [
+  {id:'classic', name:'CLASSIC RED', price:0, desc:'The original BAILOUT look. Clean and sharp.', symbol:'●', art:'linear-gradient(160deg,#c02830 0%,#1c1720 100%)', className:''},
+  {id:'gold', name:'GOLD RUSH', price:95000, desc:'Warm golds and dark brass. Money on the walls.', symbol:'★', art:'linear-gradient(160deg,#c09020 0%,#1a1408 100%)', className:'theme-gold'},
+  {id:'neon', name:'NEON TOKYO', price:180000, desc:'Hot pinks and electric purples. Late-night energy.', symbol:'✦', art:'linear-gradient(160deg,#d040a0 0%,#100c1c 100%)', className:'theme-neon'},
+  {id:'forest', name:'DEEP FOREST', price:140000, desc:'Moss and emerald. Quiet power.', symbol:'♣', art:'linear-gradient(160deg,#40a050 0%,#0c1810 100%)', className:'theme-forest'},
+  {id:'ice', name:'ARCTIC ICE', price:160000, desc:'Cold blues and frost. Clean and sharp.', symbol:'❄', art:'linear-gradient(160deg,#40a0d0 0%,#0c141c 100%)', className:'theme-ice'},
+  {id:'void', name:'VOID PURPLE', price:220000, desc:'Deep violet and black. The end of the line.', symbol:'◆', art:'linear-gradient(160deg,#7030b0 0%,#0a0810 100%)', className:'theme-void'},
+  {id:'blood', name:'BLOOD MONEY', price:200000, desc:'Crimson and shadow. Aggressive energy.', symbol:'☠', art:'linear-gradient(160deg,#c03030 0%,#160c0c 100%)', className:'theme-blood'}
+];
+
+let s = {
+  total: 0,
+  owned: [],
+  themesOwned: ['classic'],
+  activeTheme: 'classic',
+  caseValues: [],
+  playerCase: null,
+  opened: [],
+  stage: 'choose',
+  round: 0,
+  offer: 0,
+  won: 0,
+  openedThis: 0,
+  callReady: false,
+  callTimer: null,
+  callMode: null,
+  shopTab: 'items',
+  neonBonusThisRound: 0
+};
+
+let audioCtx = null;
+
+function sound(kind) {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+    const seq = {
+      open: [[520,.06],[760,.08],[390,.09]],
+      deal: [[440,.12],[660,.14],[880,.2],[1100,.15]],
+      no: [[210,.13],[150,.2],[110,.18]],
+      ring: [[740,.11],[620,.11],[740,.11],[620,.11]],
+      pickup: [[360,.07],[520,.1],[680,.08]],
+      click: [[500,.025]],
+      high: [[660,.08],[880,.1],[1100,.12],[1320,.15]],
+      buy: [[400,.08],[600,.1],[800,.12],[1000,.1]]
+    }[kind] || [[440,.08]];
+    seq.forEach((v, i) => {
+      let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = kind === 'ring' ? 'square' : (kind === 'high' ? 'sawtooth' : 'triangle');
+      o.frequency.value = v[0];
+      g.gain.setValueAtTime(.0001, now + i * .12);
+      g.gain.exponentialRampToValueAtTime(kind === 'ring' ? .11 : .14, now + i * .12 + .012);
+      g.gain.exponentialRampToValueAtTime(.0001, now + i * .12 + v[1]);
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start(now + i * .12);
+      o.stop(now + i * .12 + v[1] + .02);
+    });
+  } catch (e) {}
+}
+
+function save() {}
+function load() { wallet(); applyTheme(s.activeTheme); }
+
+function wallet() {
+  document.getElementById('wallet').textContent = fmt(s.total);
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(x => x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updatePhoneLabel();
+}
+
+function has(id) { return s.owned.includes(id); }
+function hasTheme(id) { return s.themesOwned.includes(id); }
+
+function getOfferMult() {
+  let m = 1;
+  goods.forEach(g => { if (has(g.id) && g.bonus === 'offer') m *= g.mult; });
+  return m;
+}
+function getAllMult() {
+  let m = 1;
+  goods.forEach(g => { if (has(g.id) && g.bonus === 'all') m *= g.mult; });
+  return m;
+}
+function getFinalMult() {
+  let m = 1;
+  goods.forEach(g => { if (has(g.id) && g.bonus === 'final') m *= g.mult; });
+  return m;
+}
+function getFlatBonus() {
+  let sum = 0;
+  goods.forEach(g => { if (has(g.id) && g.bonus === 'flat') sum += g.amount; });
+  return sum;
+}
+
+function applyTheme(id) {
+  const t = themes.find(x => x.id === id) || themes[0];
+  document.body.className = t.className || '';
+  s.activeTheme = id;
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  clearInterval(s.callTimer);
+  s.caseValues = shuffle([...MONEY]);
+  s.playerCase = null;
+  s.opened = [];
+  s.stage = 'choose';
+  s.round = 0;
+  s.offer = 0;
+  s.won = 0;
+  s.openedThis = 0;
+  s.callReady = false;
+  s.callMode = null;
+  s.neonBonusThisRound = 0;
+  show('game');
+  renderCases();
+  renderBoard();
+  gameText();
+  updatePhoneLabel();
+}
+
+function updatePhoneLabel() {
+  const label = document.getElementById('phone-label');
+  const ph = document.getElementById('phone');
+  if (s.callReady) {
+    label.textContent = 'PICK UP!';
+    return;
+  }
+  const screen = document.querySelector('.screen.active')?.id;
+  if (screen === 'home') label.textContent = 'CALL FOR HELP';
+  else if (screen === 'shop') label.textContent = 'ASK ABOUT ITEMS';
+  else if (screen === 'game' && s.stage === 'choose') label.textContent = 'THE LINE IS QUIET';
+  else label.textContent = 'STANDBY';
+  ph.classList.remove('ringing');
+}
+
+function gameText() {
+  let p = document.getElementById('phase');
+  let r = document.getElementById('round');
+  let i = document.getElementById('instructions');
+  if (s.stage === 'choose') {
+    p.textContent = 'CHOOSE YOUR CASE';
+    r.textContent = 'YOUR CASE';
+    i.textContent = 'Choose one case to keep. It stays closed.';
+  } else {
+    p.textContent = 'OPEN THE CASES';
+    r.textContent = `ROUND ${s.round + 1} / 8`;
+    i.textContent = `Open ${rounds[s.round]} case${rounds[s.round] === 1 ? '' : 's'} before the Banker calls.`;
+  }
+}
+
+function renderCases() {
+  let el = document.getElementById('cases');
+  el.innerHTML = '';
+  for (let n = 1; n <= 26; n++) {
+    let b = document.createElement('button');
+    b.className = 'case';
+    if (s.playerCase === n) b.classList.add('player', 'selected');
+    if (s.opened.includes(n)) {
+      b.classList.add('opened');
+      let val = s.caseValues[n - 1];
+      if (val >= 100000) b.classList.add('high-value');
+      else b.classList.add('low-value');
+    }
+    b.disabled = s.opened.includes(n) ||
+      (s.stage === 'choose' && s.playerCase !== null) ||
+      (s.stage !== 'choose' && s.stage !== 'open');
+    if (s.opened.includes(n)) {
+      b.innerHTML = `<span class="case-value">${fmt(s.caseValues[n - 1])}</span>`;
+    } else {
+      b.innerHTML = `<span class="case-number">${String(n).padStart(2, '0')}</span><span class="case-handle"></span>`;
+    }
+    b.onclick = () => caseClick(n);
+    el.appendChild(b);
+  }
+}
+
+function renderBoard() {
+  let low = document.getElementById('low-values');
+  let high = document.getElementById('high-values');
+  low.innerHTML = '';
+  high.innerHTML = '';
+  MONEY.forEach((v, i) => {
+    let d = document.createElement('div');
+    d.className = 'prize';
+    if (s.opened.some(n => s.caseValues[n - 1] === v)) d.classList.add('gone');
+    d.textContent = fmt(v);
+    (i < 13 ? low : high).appendChild(d);
+  });
+}
+
+function spawnParticles(x, y, isHigh) {
+  const layer = document.getElementById('particles');
+  const extra = has('neon') ? 12 : 0;
+  const count = (isHigh ? 18 : 8) + extra;
+  const colors = isHigh ? ['#f0c45a', '#ffe090', '#ff8060', '#fff'] : ['#a09070', '#c0b090', '#806050'];
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    const size = 4 + Math.random() * 6;
+    p.style.cssText = `
+      position:absolute; left:${x}px; top:${y}px; width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius:1px; pointer-events:none;
+      box-shadow: 0 0 4px ${colors[0]};
+    `;
+    layer.appendChild(p);
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 40 + Math.random() * 90;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 30;
+    const dur = 500 + Math.random() * 400;
+    p.animate([
+      { transform: 'translate(0,0) scale(1)', opacity: 1 },
+      { transform: `translate(${dx}px,${dy}px) scale(0)`, opacity: 0 }
+    ], { duration: dur, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = () => p.remove();
+  }
+}
+
+function caseClick(n) {
+  if (s.stage === 'choose') {
+    sound('click');
+    s.playerCase = n;
+    s.stage = 'open';
+    renderCases();
+    gameText();
+    updatePhoneLabel();
+    return;
+  }
+  if (s.stage !== 'open' || n === s.playerCase || s.opened.includes(n)) return;
+
+  s.opened.push(n);
+  const val = s.caseValues[n - 1];
+  const isHigh = val >= 100000;
+  sound(isHigh ? 'high' : 'open');
+  renderCases();
+  renderBoard();
+
+  // Neon bonus: cash on high-value opens
+  if (isHigh && has('neon')) {
+    const g = goods.find(x => x.id === 'neon');
+    s.neonBonusThisRound += g.amount;
+    s.total += g.amount;
+    wallet();
+  }
+
+  const btn = document.querySelectorAll('.case')[n - 1];
+  if (btn) {
+    const rect = btn.getBoundingClientRect();
+    spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, isHigh);
+  }
+
+  s.openedThis++;
+  let extra = '';
+  if (isHigh && has('neon')) extra = ` (+${fmt(3000)} Neon)`;
+  document.getElementById('instructions').textContent =
+    `CASE ${n} — ${fmt(val)}${extra}. ${rounds[s.round] - s.openedThis} more to open.`;
+
+  if (s.openedThis >= rounds[s.round]) {
+    s.stage = 'ringing';
+    renderCases();
+    ringBanker();
+  }
+}
+
+function remaining() {
+  return s.caseValues.filter((v, i) => i + 1 !== s.playerCase && !s.opened.includes(i + 1));
+}
+
+function calcOffer() {
+  let a = remaining();
+  let avg = a.reduce((x, y) => x + y, 0) / Math.max(1, a.length);
+  // Nerfed early factors — grinding feel
+  let f = [.18, .26, .34, .44, .55, .66, .80, .92][s.round];
+  let base = Math.max(.01, Math.round(avg * f / 100) * 100);
+  base = Math.round(base * getOfferMult());
+  if (has('arcade')) base = Math.max(base, Math.round(avg * 0.28));
+  return base;
+}
+
+function ringBanker() {
+  s.offer = calcOffer();
+  s.callReady = true;
+  s.callMode = 'deal';
+  document.getElementById('phone-label').textContent = 'PICK UP!';
+  let ph = document.getElementById('phone');
+  ph.classList.add('ringing');
+  sound('ring');
+  let count = 0;
+  s.callTimer = setInterval(() => {
+    sound('ring');
+    if (++count >= 10) clearInterval(s.callTimer);
+  }, 980);
+  document.getElementById('instructions').textContent = 'The Banker is calling. Pick up the red phone.';
+}
+
+function pickupPhone() {
+  if (s.callReady && s.callMode === 'deal') {
+    s.callReady = false;
+    clearInterval(s.callTimer);
+    sound('pickup');
+    let ph = document.getElementById('phone');
+    ph.classList.remove('ringing');
+    ph.classList.add('picked');
+    setTimeout(() => ph.classList.remove('picked'), 450);
+    document.getElementById('phone-label').textContent = 'CONNECTED';
+    openBankerDeal();
+    return;
+  }
+  const screen = document.querySelector('.screen.active')?.id;
+  if (screen === 'home') {
+    sound('pickup');
+    openBankerHowTo();
+    return;
+  }
+  if (screen === 'shop') {
+    sound('pickup');
+    openBankerShopTalk();
+    return;
+  }
+}
+
+function openBankerDeal() {
+  document.getElementById('banker-modal').classList.add('show');
+  document.getElementById('offer-wrap').classList.add('hidden');
+  document.getElementById('chat-continue').classList.add('hidden');
+  const msgs = [
+    `Well, well. ${s.opened.length} cases down. I hope you're enjoying yourself. I certainly am.`,
+    `I've been looking at the numbers. I have an offer for you. It's a good one. For me, anyway.`,
+    `You're getting closer to the end. I would hate to see you leave empty-handed. Let's talk business.`,
+    `The remaining cases are... interesting. Here's what I'm willing to offer.`,
+    `Final stretches always make me nostalgic. Take the money or keep gambling.`
+  ];
+  typeText(msgs[Math.min(s.round, msgs.length - 1)], () => {
+    document.getElementById('offer-amount').textContent = fmt(s.offer);
+    document.getElementById('offer-wrap').classList.remove('hidden');
+  });
+}
+
+function openBankerHowTo() {
+  document.getElementById('banker-modal').classList.add('show');
+  document.getElementById('offer-wrap').classList.add('hidden');
+  document.getElementById('chat-continue').classList.remove('hidden');
+  document.getElementById('chat-continue-btn').textContent = 'GOT IT';
+  document.getElementById('chat-continue-btn').onclick = () => {
+    document.getElementById('banker-modal').classList.remove('show');
+    updatePhoneLabel();
+  };
+  typeText(
+    "Listen carefully. 26 cases. Pick one and keep it closed. Open the rest in rounds. I call with offers — early ones are low on purpose. Grind, buy upgrades, buy themes. Themes change the whole look. Items actually help. Don't waste my time.",
+    () => {}
+  );
+}
+
+function openBankerShopTalk() {
+  document.getElementById('banker-modal').classList.add('show');
+  document.getElementById('offer-wrap').classList.add('hidden');
+  document.getElementById('chat-continue').classList.remove('hidden');
+  document.getElementById('chat-continue-btn').textContent = 'THANKS';
+  document.getElementById('chat-continue-btn').onclick = () => {
+    document.getElementById('banker-modal').classList.remove('show');
+    updatePhoneLabel();
+  };
+
+  if (s.shopTab === 'themes') {
+    typeText(
+      "Themes are pure vanity... and I respect that. Gold Rush makes everything look expensive. Neon Tokyo is loud. Void is for people who already own the Vault. Pick one and the whole lobby changes. Classic is free. The rest cost real money.",
+      () => {}
+    );
+    return;
+  }
+
+  const owned = goods.filter(g => has(g.id));
+  const unowned = goods.filter(g => !has(g.id));
+  let msg;
+  if (owned.length === 0) {
+    msg = "Empty shelves. Velvet Rope is the smart first buy — my offers get a little less insulting. Neon pays you cash every time a big number opens. The Vault is for people who already won.";
+  } else if (unowned.length === 0) {
+    msg = "You own every upgrade. The multipliers are stacking. Try not to get cocky — I still enjoy the $0.01.";
+  } else {
+    const rec = unowned[0];
+    msg = `You have ${owned.length} upgrade${owned.length > 1 ? 's' : ''}. Next I'd notice is ${rec.name}. ${rec.effect}. The rest is just showing off.`;
+  }
+  typeText(msg, () => {});
+}
+
+function typeText(t, done) {
+  let box = document.getElementById('chat-log');
+  box.textContent = '';
+  let i = 0;
+  let c = document.createElement('span');
+  c.className = 'typing-cursor';
+  box.append(c);
+  function step() {
+    if (i < t.length) {
+      c.insertAdjacentText('beforebegin', t[i++]);
+      setTimeout(step, 18 + Math.random() * 22);
+    } else {
+      c.remove();
+      done && done();
+    }
+  }
+  step();
+}
+
+function flash(color) {
+  let f = document.getElementById('flash');
+  f.className = 'flash ' + color;
+  setTimeout(() => f.className = 'flash', 700);
+}
+
+function takeDeal() {
+  sound('deal');
+  flash('green');
+  s.won = s.offer;
+  document.getElementById('banker-modal').classList.remove('show');
+  setTimeout(() => finish(s.won, 'You accepted the Banker\'s offer.'), 280);
+}
+
+function noDeal() {
+  sound('no');
+  flash('red');
+  document.getElementById('offer-wrap').classList.add('hidden');
+  typeText('No deal? Bold. I do hope you know what you are doing.', () => {
+    document.getElementById('chat-continue').classList.remove('hidden');
+    document.getElementById('chat-continue-btn').textContent = 'BACK TO THE CASES';
+    document.getElementById('chat-continue-btn').onclick = closeBanker;
+  });
+}
+
+function closeBanker() {
+  document.getElementById('banker-modal').classList.remove('show');
+  s.round++;
+  s.openedThis = 0;
+  s.stage = 'open';
+  s.callMode = null;
+  if (s.round >= rounds.length) {
+    finalChoice();
+    return;
+  }
+  renderCases();
+  gameText();
+  updatePhoneLabel();
+}
+
+function finalChoice() {
+  s.stage = 'final';
+  document.getElementById('phase').textContent = 'THE FINAL DECISION';
+  document.getElementById('round').textContent = 'ONE LAST CHOICE';
+  document.getElementById('instructions').textContent = 'Two cases remain. Keep yours or swap.';
+  let el = document.getElementById('cases');
+  el.innerHTML = '';
+  let keep = document.createElement('button');
+  let swap = document.createElement('button');
+  keep.className = 'primary';
+  keep.textContent = 'KEEP MY CASE';
+  swap.className = 'primary';
+  swap.textContent = 'SWAP CASES';
+  swap.style.marginLeft = '12px';
+  keep.onclick = () => {
+    sound('deal');
+    flash('green');
+    finish(s.caseValues[s.playerCase - 1], 'You trusted your original case.');
+  };
+  swap.onclick = () => {
+    let other = Array.from({length: 26}, (_, i) => i + 1)
+      .find(n => n !== s.playerCase && !s.opened.includes(n));
+    sound('open');
+    flash('red');
+    finish(s.caseValues[other - 1], 'You swapped at the last second.');
+  };
+  el.append(keep, swap);
+}
+
+function finish(amount, line) {
+  let final = amount;
+  final = Math.round(final * getFinalMult());
+  final = Math.round(final * getAllMult());
+  const flat = getFlatBonus();
+  final += flat;
+
+  s.total += final;
+  wallet();
+  show('result');
+  document.getElementById('result-line').textContent = line;
+  document.getElementById('result-amount').textContent = fmt(final);
+  document.getElementById('result-extra').textContent =
+    `Your original case contained ${fmt(s.caseValues[s.playerCase - 1])}.`;
+  let bonusText = '';
+  if (flat > 0 || getFinalMult() > 1 || getAllMult() > 1 || s.neonBonusThisRound > 0) {
+    const parts = [];
+    if (s.neonBonusThisRound > 0) parts.push(`Neon +${fmt(s.neonBonusThisRound)}`);
+    if (flat > 0 || getFinalMult() > 1 || getAllMult() > 1) parts.push(`upgrades +${fmt(final - amount)}`);
+    bonusText = 'Bonuses: ' + parts.join(', ');
+  }
+  document.getElementById('result-bonus').textContent = bonusText;
+  document.getElementById('result-total').textContent = fmt(s.total);
+  updatePhoneLabel();
+}
+
+function switchShopTab(tab) {
+  s.shopTab = tab;
+  document.getElementById('tab-items').classList.toggle('active', tab === 'items');
+  document.getElementById('tab-themes').classList.toggle('active', tab === 'themes');
+  document.getElementById('shop-hint').textContent =
+    tab === 'themes'
+      ? '📞 Call the phone for the Banker’s opinion on themes.'
+      : '📞 Call the phone for the Banker’s take on these.';
+  renderShop();
+}
+
+function showShop() {
+  show('shop');
+  document.getElementById('shop-wallet').textContent = fmt(s.total);
+  renderShop();
+  updatePhoneLabel();
+}
+
+function renderShop() {
+  let el = document.getElementById('shop-grid');
+  el.innerHTML = '';
+  if (s.shopTab === 'themes') {
+    themes.forEach(t => {
+      let owned = hasTheme(t.id);
+      let active = s.activeTheme === t.id;
+      let d = document.createElement('div');
+      d.className = 'shop-item' + (owned ? ' owned' : '') + (active ? ' active-theme' : '');
+      d.innerHTML = `
+        <div class="shop-art" style="background:${t.art}">
+          <span class="artifact">${t.symbol}</span>
+          <div class="sparkles"></div>
+        </div>
+        <h3>${t.name}</h3>
+        <p>${t.desc}</p>
+        <div class="shop-effect">${active ? '● ACTIVE' : (owned ? 'Owned — click to equip' : 'Theme pack')}</div>
+        <div class="shop-price">${t.price === 0 ? 'FREE' : fmt(t.price)}</div>
+        <button ${(!owned && s.total < t.price) ? 'disabled' : ''}>
+          ${active ? 'EQUIPPED' : (owned ? 'EQUIP' : (s.total < t.price ? 'NOT ENOUGH' : 'PURCHASE'))}
+        </button>
+      `;
+      d.querySelector('button').onclick = () => {
+        if (!owned) {
+          if (s.total < t.price) return;
+          s.total -= t.price;
+          s.themesOwned.push(t.id);
+          sound('buy');
+          wallet();
+        }
+        applyTheme(t.id);
+        document.getElementById('shop-wallet').textContent = fmt(s.total);
+        renderShop();
+      };
+      el.append(d);
+    });
+  } else {
+    goods.forEach(g => {
+      let owned = has(g.id);
+      let d = document.createElement('div');
+      d.className = 'shop-item' + (owned ? ' owned' : '');
+      d.innerHTML = `
+        <div class="shop-art" style="background:${g.art}">
+          <span class="artifact">${g.symbol}</span>
+          <div class="sparkles"></div>
+        </div>
+        <h3>${g.name}</h3>
+        <p>${g.desc}</p>
+        <div class="shop-effect">${g.effect}</div>
+        <div class="shop-price">${fmt(g.price)}</div>
+        <button ${owned || s.total < g.price ? 'disabled' : ''}>
+          ${owned ? 'COLLECTED' : (s.total < g.price ? 'NOT ENOUGH' : 'PURCHASE')}
+        </button>
+      `;
+      if (owned) {
+        const spark = d.querySelector('.sparkles');
+        for (let i = 0; i < 6; i++) {
+          const dot = document.createElement('div');
+          const x = 10 + Math.random() * 80;
+          const y = 10 + Math.random() * 80;
+          dot.style.cssText = `position:absolute;left:${x}%;top:${y}%;width:4px;height:4px;background:#ffe090;border-radius:1px;opacity:.7;animation:blink ${.8+Math.random()}s infinite`;
+          spark.appendChild(dot);
+        }
+      }
+      d.querySelector('button').onclick = () => buy(g);
+      el.append(d);
+    });
+  }
+}
+
+function buy(g) {
+  if (has(g.id) || s.total < g.price) return;
+  s.total -= g.price;
+  s.owned.push(g.id);
+  sound('buy');
+  wallet();
+  document.getElementById('shop-wallet').textContent = fmt(s.total);
+  renderShop();
+}
+
+load();
+updatePhoneLabel();
+</script>
+</body>
+</html>
